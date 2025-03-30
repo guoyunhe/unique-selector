@@ -71,5 +71,6 @@
     "doc": {
       "basename": "/unique-selector/"
     }
-  }
+  },
+  "version": "1.0.0"
 }
