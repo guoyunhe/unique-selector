@@ -16,20 +16,9 @@ const dataRegex = /^data-.+/;
 const attrRegex = /^attribute:(.+)/m;
 
 /**
- * @typedef Filter
- * @type {Function}
- * @param {string} type - the trait being considered ('attribute', 'tag', 'nth-child'). As a special case, the `class` attribute is split on whitespace and each token passed individually with a `class` type.
- * @param {string} key - your trait key (for 'attribute' will be the attribute name, for others will typically be the same as 'type').
- * @param {string} value - the trait value.
- * @returns {boolean} whether this trait can be used when building the selector (true = allow). Defaults to 'true' if no value returned.
- */
-
-/**
  * Returns all the selectors of the element
- * @param  { Object } element
- * @return { Object }
  */
-function getAllSelectors(el, selectors, attributesToIgnore, filter) {
+function getAllSelectors(el: Element, selectors, attributesToIgnore, filter): object {
   const consolidatedAttributesToIgnore = [...attributesToIgnore];
   const nonAttributeSelectors = [];
   for (const selectorType of selectors) {
@@ -59,11 +48,8 @@ function getAllSelectors(el, selectors, attributesToIgnore, filter) {
 
 /**
  * Tests uniqueNess of the element inside its parent
- * @param  { Object } element
- * @param { String } Selectors
- * @return { Boolean }
  */
-function testUniqueness(element, selector) {
+function testUniqueness(element: Element, selector: string): boolean {
   const { parentNode } = element;
   try {
     const elements = parentNode.querySelectorAll(selector);
@@ -75,22 +61,15 @@ function testUniqueness(element, selector) {
 
 /**
  * Tests all selectors for uniqueness and returns the first unique selector.
- * @param  { Object } element
- * @param  { Array } selectors
- * @return { String }
  */
-function getFirstUnique(element, selectors) {
+function getFirstUnique(element: object, selectors: any[]): string {
   return selectors.find(testUniqueness.bind(null, element));
 }
 
 /**
  * Checks all the possible selectors of an element to find one unique and return it
- * @param  { Object } element
- * @param  { Array } items
- * @param  { String } tag
- * @return { String }
  */
-function getUniqueCombination(element, items, tag) {
+function getUniqueCombination(element: object, items: any[], tag: string): string {
   let combinations = getCombinations(items, 3);
   let firstUnique = getFirstUnique(element, combinations);
 
@@ -112,11 +91,8 @@ function getUniqueCombination(element, items, tag) {
 
 /**
  * Returns a uniqueSelector based on the passed options
- * @param  { DOM } element
- * @param  { Array } options
- * @return { String }
  */
-function getUniqueSelector(element, selectorTypes, attributesToIgnore, filter) {
+function getUniqueSelector(element: Element, selectorTypes, attributesToIgnore, filter): string {
   let foundSelector;
 
   const elementSelectors = getAllSelectors(element, selectorTypes, attributesToIgnore, filter);
@@ -183,8 +159,16 @@ function getUniqueSelector(element, selectorTypes, attributesToIgnore, filter) {
  * @return {String}
  * @api private
  */
-
-export default function unique(el: Element, options = {}): string | null {
+export default function unique(
+  el: Element,
+  options: {
+    selectorTypes?: string[];
+    attributesToIgnore?: string[];
+    filter?: (type: string, key: string, value: string) => boolean;
+    selectorCache?: Map<Element, string>;
+    isUniqueCache?: Map<string, boolean>;
+  } = {},
+): string | null {
   const {
     selectorTypes = ['id', 'name', 'class', 'tag', 'nth-child'],
     attributesToIgnore = ['id', 'class', 'length'],
