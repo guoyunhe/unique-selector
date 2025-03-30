@@ -184,7 +184,7 @@ function getUniqueSelector(element, selectorTypes, attributesToIgnore, filter) {
  * @api private
  */
 
-export default function unique(el, options = {}) {
+export default function unique(el: Element, options = {}): string | null {
   const {
     selectorTypes = ['id', 'name', 'class', 'tag', 'nth-child'],
     attributesToIgnore = ['id', 'class', 'length'],
@@ -233,7 +233,8 @@ export default function unique(el, options = {}) {
     if (isUniqueSelector) {
       return maybeUniqueSelector;
     }
-    currentElement = currentElement.parentNode;
+
+    currentElement = currentElement.parentNode as Element;
   }
 
   return null;
